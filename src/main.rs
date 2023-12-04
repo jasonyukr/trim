@@ -1,10 +1,13 @@
-use std::io::{self, BufRead};
+use std::io::{self, BufRead, BufWriter, Write};
 
 fn main() {
+    let stdout = io::stdout();
+    let mut out = BufWriter::new(stdout);
     let stdin = io::stdin();
     for line in stdin.lock().lines() {
         if let Ok(ln) = line {
-            println!("{}", ln.trim());
+            writeln!(out, "{}", ln.trim()).unwrap();
         }
     }
+    out.flush().unwrap();
 }
