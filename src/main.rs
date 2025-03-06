@@ -1,4 +1,5 @@
 use std::io::{self, BufRead, BufWriter, Write};
+use std::process;
 
 fn main() {
     let stdout = io::stdout();
@@ -6,7 +7,9 @@ fn main() {
     let stdin = io::stdin();
     for line in stdin.lock().lines() {
         if let Ok(ln) = line {
-            writeln!(out, "{}", ln.trim()).unwrap();
+            if let Err(_) = writeln!(out, "{}", ln.trim()) {
+                process::exit(1);
+            }
         }
     }
     out.flush().unwrap();
