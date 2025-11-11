@@ -3,14 +3,14 @@ use std::process;
 use std::env;
 
 fn main() {
-    let trail = env::args().any(|arg| arg == "--trail");
+    let trim_end = env::args().any(|arg| arg == "--end");
 
     let stdout = io::stdout();
     let mut out = BufWriter::new(stdout);
     let stdin = io::stdin();
     let mut stdin_lock = stdin.lock();
 
-    if trail {
+    if trim_end {
         let mut buf = String::new();
         while let Ok(n) = stdin_lock.read_line(&mut buf) {
             if n == 0 { break; }
@@ -20,10 +20,10 @@ fn main() {
             buf.clear();
         }
     } else {
-        let mut buf = Vec::new();
-        while let Ok(n) = stdin_lock.read_until(b'\n', &mut buf) {
+        let mut buf = String::new();
+        while let Ok(n) = stdin_lock.read_line(&mut buf) {
             if n == 0 { break; }
-            if out.write_all(&buf).is_err() {
+            if writeln!(out, "{}", buf.trim()).is_err() {
                 process::exit(1);
             }
             buf.clear();
